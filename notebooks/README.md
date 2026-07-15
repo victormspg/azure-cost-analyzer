@@ -12,22 +12,33 @@ runtime).
 
 ## Run order (DAG)
 
-```
-00_Deploy_ACA_Pipeline   (run once — builds AzureCostAnalyzer_Pipeline)
-        │
-        ▼  the pipeline runs 01–08:
-01_Load_CostManagement_Focus_Data
-        │  (silver: focus_partitioned)
-        ├──────────────┬───────────────┬───────────────┬───────────────┐
-        ▼              ▼               ▼               ▼               ▼
-02_Gold_Calendar  03_Gold_        04_Gold_        05_Gold_        06_Gold_
-                  FocusMonthly    CostSummary     ByTag           Reservations
-                                      │
-                                      ▼
-                                 07_Gold_Anomalies          08_Gold_CostByResource
-        │
-        ▼  after 01–08 complete:
-09_Build_SemanticModel   (run once — builds AzureCostAnalyzer_SM)
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Segoe UI, Arial", "fontSize": "15px"}}}%%
+flowchart TB
+    N00["<b>00</b> · Deploy_ACA_Pipeline<br/>builds AzureCostAnalyzer_Pipeline"]
+    N01["<b>01</b> · Load_CostManagement_Focus_Data<br/>silver · focus_partitioned"]
+    N02["<b>02</b> · Gold_Calendar"]
+    N03["<b>03</b> · Gold_FocusMonthly"]
+    N04["<b>04</b> · Gold_CostSummary"]
+    N05["<b>05</b> · Gold_ByTag"]
+    N06["<b>06</b> · Gold_Reservations"]
+    N07["<b>07</b> · Gold_Anomalies"]
+    N08["<b>08</b> · Gold_CostByResource"]
+    N09["<b>09</b> · Build_SemanticModel<br/>builds AzureCostAnalyzer_SM"]
+
+    N00 -.->|deploys pipeline that runs 01-08| N01
+    N01 --> N02 & N03 & N04 & N05 & N06 & N08
+    N04 --> N07
+    N02 & N03 & N04 & N05 & N06 & N07 & N08 --> N09
+
+    classDef setup fill:#E1E1E1,stroke:#616161,color:#1B1B1B;
+    classDef silver fill:#D6ECFC,stroke:#0F6CBD,color:#1B1B1B;
+    classDef gold fill:#EAF6E9,stroke:#3B8A2E,color:#1B1B1B;
+    classDef model fill:#FCE3CC,stroke:#D97B29,stroke-width:2px,color:#1B1B1B;
+    class N00 setup;
+    class N01 silver;
+    class N02,N03,N04,N05,N06,N07,N08 gold;
+    class N09 model;
 ```
 
 - `01` fans out to the six gold builders; each depends only on `01`.

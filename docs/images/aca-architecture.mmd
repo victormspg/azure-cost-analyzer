@@ -1,0 +1,47 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Segoe UI, Arial", "fontSize": "16px"}}}%%
+flowchart TB
+    subgraph AZ["☁️ Azure"]
+        direction LR
+        CM["💰 <b>Cost Management</b><br/>FOCUS export"] -->|scheduled export| ADLS[("🗄️ <b>ADLS Gen2</b>")]
+    end
+
+    subgraph DW["Fabric · Data workspace"]
+        SC["🔗 <b>OneLake shortcut</b><br/>Files/focuscost"]
+        subgraph LH["Lakehouse · AzureCostAnalyzer_LH"]
+            direction LR
+            SILVER["🥈 <b>silver</b>"] --> GOLD["🥇 <b>gold facts + dims</b>"]
+        end
+        PIPE["⚙&nbsp;<b>AzureCostAnalyzer_Pipeline</b><br/>notebooks 01-08"]
+        SM["📊 <b>Semantic model</b><br/>AzureCostAnalyzer_SM<br/>Direct Lake on SQL<br/>(Auth: SSO or SP)"]
+    end
+
+    subgraph CW["Fabric · Consumption workspace (optional split)"]
+        direction LR
+        PBI["📈 <b>Power BI / Excel / XMLA</b>"]
+        DA["🤖 <b>Data Agent</b><br/>AzureCostAnalyzer_Agent"]
+        APP["🌐 <b>RayFin web app</b>"]
+    end
+
+    ADLS -->|"Workspace Identity or SP<br/>(Storage Blob Data Reader)"| SC
+    SC --> SILVER
+    PIPE --> SILVER
+    PIPE --> GOLD
+    GOLD -->|"notebook 09 builds"| SM
+    SM --> PBI
+    SM --> DA
+    SM --> APP
+
+    classDef azure fill:#E1E1E1,stroke:#616161,color:#1B1B1B;
+    classDef yellow fill:#FFF4CE,stroke:#C19C00,color:#1B1B1B;
+    classDef lake fill:#D6ECFC,stroke:#0F6CBD,color:#1B1B1B;
+    classDef model fill:#FCE3CC,stroke:#D97B29,stroke-width:2px,color:#1B1B1B;
+    classDef red fill:#FBD9D6,stroke:#C4314B,color:#1B1B1B;
+    class CM,ADLS azure;
+    class SC,PIPE yellow;
+    class SILVER,GOLD lake;
+    class SM model;
+    class PBI,DA,APP red;
+    style AZ fill:#F5F5F5,stroke:#9E9E9E,stroke-width:2px;
+    style DW fill:#F4FBF3,stroke:#3B8A2E,stroke-width:2px;
+    style LH fill:#F2F8FE,stroke:#0F6CBD,stroke-width:1.5px;
+    style CW fill:#F4FBF3,stroke:#3B8A2E,stroke-width:2px;

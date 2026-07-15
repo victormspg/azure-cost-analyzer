@@ -11,9 +11,6 @@ fabric.yaml
 *.pbix
 *.pbip
 
-# Diagrams live as inline mermaid in the docs; images/ is local scratch (rendered previews + .mmd sources)
-docs/images/
-
 # OS / editor
 .DS_Store
 Thumbs.db

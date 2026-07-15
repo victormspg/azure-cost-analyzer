@@ -1,0 +1,33 @@
+%%{init: {"theme": "base", "themeVariables": {"fontFamily": "Segoe UI, Arial", "fontSize": "16px"}}}%%
+flowchart LR
+    PLAT["👥 <b>Platform team</b>"]
+    AUTH["✍️ <b>Report authors</b>"]
+    VIEW["👁️ <b>Viewers (RLS)</b>"]
+
+    subgraph CAP["Single Fabric capacity"]
+        direction TB
+        subgraph CWS["Consumption workspace"]
+            CONS["&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;📈&nbsp;<b>Reports</b>&nbsp;&nbsp;·&nbsp;&nbsp;🤖&nbsp;<b>Data&nbsp;Agent</b>&nbsp;&nbsp;·&nbsp;&nbsp;🌐&nbsp;<b>App</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"]
+        end
+        subgraph DWS["Data workspace · locked down"]
+            direction LR
+            LHP["🏠 <b>Lakehouse · ⚙ Pipeline · 📓 Notebooks</b>"]
+            MODEL["📊 <b>Semantic model</b><br/>AzureCostAnalyzer_SM"]
+        end
+    end
+
+    PLAT --> DWS
+    AUTH --> CWS
+    VIEW --> CWS
+
+    classDef people fill:#FFF4CE,stroke:#C19C00,color:#1B1B1B;
+    classDef lake fill:#D6ECFC,stroke:#0F6CBD,color:#1B1B1B;
+    classDef model fill:#FCE3CC,stroke:#D97B29,stroke-width:2px,color:#1B1B1B;
+    classDef red fill:#FBD9D6,stroke:#C4314B,color:#1B1B1B;
+    class PLAT,AUTH,VIEW people;
+    class LHP lake;
+    class MODEL model;
+    class CONS red;
+    style CAP fill:#F5F5F5,stroke:#BDBDBD,stroke-width:2px;
+    style DWS fill:#EAF6E9,stroke:#3B8A2E,stroke-width:2px;
+    style CWS fill:#EAF6E9,stroke:#3B8A2E,stroke-width:2px;
