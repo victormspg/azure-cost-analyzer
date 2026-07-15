@@ -1,0 +1,21 @@
+# Fabric / notebook artifacts
+.ipynb_checkpoints/
+*.pyc
+__pycache__/
+
+# Local environment / secrets - never commit
+.env
+*.local
+local.settings.json
+fabric.yaml
+*.pbix
+*.pbip
+
+# Diagrams live as inline mermaid in the docs; images/ is local scratch (rendered previews + .mmd sources)
+docs/images/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
